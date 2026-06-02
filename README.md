@@ -519,11 +519,7 @@ But it has a major impact on reliability.
 
 # From Modules to a Platform
 
-By the time the PCB was complete, the project had changed significantly. At this point, it no longer feels like a simple stair light. It feels more like a compact local sensing and lighting control platform.
-
-Ironically, the goal at the beginning was simply to make a staircase light.
-
-But the hardware journey ended up teaching me almost as much as the software side of the project.
+By the time the PCB was complete, the project had changed significantly. Ironically, the goal at the beginning was simply to make a staircase light. But the hardware journey ended up teaching me almost as much as the software side of the project.
 
 ---
 
