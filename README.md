@@ -356,34 +356,174 @@ This eventually became one of the biggest contributors to overall system stabili
 
 Once the software architecture stabilized, another issue became increasingly obvious:
 
-Wiring.
+At present, the system looks more like a makeshift lab setup than a finished project, and it looks a bit unsightly sitting on the stairs. 
+Furthermore, anyone who has used XIAO knows that their buttons are simply too small. Every debugging session, firmware update, and hardware modification has become increasingly cumbersome.
 
-As more modules were added, the system began looking more like a temporary laboratory setup than a finished project.
+So eventually I redesigned the entire system into a dedicated PCB. 
 
-Every debugging session, firmware update, and hardware modification became increasingly inconvenient.
+But at the beginning, I wasn't trying to create a completely new board. Instead, I started with an existing LED Driver Board design. My goal was simple:
 
-So eventually I redesigned the entire system into a dedicated PCB.
+> Reduce wiring and integrate everything into a single board.
 
-The controller board was based on one of my earlier LED Driver Board designs and integrates:
-
-- 12V input power
-- Dedicated 12V LED output
-- Dedicated 5V controller power
+This was actually my first custom PCB design. I made some practical improvements to the LED driver board：
 - XIAO ESP32-C6 integration
 - Radar interfaces
-- External Boot button access
+- Light sensor integration
 - Expansion GPIO headers
-
-A few practical improvements were added as well:
-
 - The Boot button is exposed externally instead of requiring access to the tiny button on the XIAO module
 - Unused GPIOs are routed to edge headers for future expansion
-- Most jumper wires have been eliminated
-- Additional room is reserved for future DIY modifications
 
-At this point, it no longer feels like a simple stair light.
+At first glance, these changes seemed straightforward.
 
-It feels more like a compact local sensing and lighting control platform.
+They weren't.
+
+
+They weren't.
+
+---
+
+# Learning What Every Component Actually Does
+
+One challenge I quickly discovered was that I didn't fully understand many parts of the original LED driver circuit.
+
+Before modifying anything, I had to work backwards and learn why every component existed.
+
+For each unfamiliar component, I found myself repeatedly asking:
+
+* What does this part do?
+* Why is it here?
+* What would happen if I removed it?
+* Does its position matter?
+
+This process eventually grew into a personal hardware knowledge base where I documented PCB design concepts, layout practices, and common mistakes.
+
+Instead of blindly copying circuits, I wanted to understand them.
+
+Only after understanding the original design could I confidently begin modifying it.
+
+---
+
+# When the Schematic Was Finished... I Thought I Was Done
+
+Like many beginners, I initially believed that finishing the schematic meant the hard work was over.
+
+Then I opened the PCB layout editor.
+
+And immediately realized I was wrong.
+
+The schematic looked neat and organized.
+
+The PCB looked like chaos.
+
+Connections crossed everywhere.
+
+Components seemed impossible to place.
+
+Nothing fit the way I imagined.
+
+My first attempt was to use the automatic router.
+
+That lasted about five minutes.
+
+The software technically connected everything, but the result looked terrible.
+
+Some edge connectors ended up near the center of the board.
+
+Power traces wandered across the PCB.
+
+Signal paths took bizarre routes.
+
+The board was electrically connected, but it wasn't a design I would actually want to manufacture.
+
+Eventually I deleted most of the routing and started over.
+
+One trace at a time.
+
+---
+
+# Every Component Has Its Own Personality
+
+One lesson that surprised me was that PCB design isn't simply about connecting pins together.
+
+Different components have very different layout requirements.
+
+A schematic tells you what should connect.
+
+A PCB layout determines whether those connections actually work well.
+
+For example:
+
+### Input Protection Components
+
+The fuse, reverse-polarity protection diode, and TVS diode need to be placed as close as possible to the 12V power input.
+
+Their job is to stop electrical problems before those problems enter the rest of the board.
+
+If they are placed too far away, they become significantly less effective.
+
+### Switching Power Components
+
+The inductor used by the 5V switching regulator behaves very differently.
+
+It carries relatively large currents and generates electromagnetic noise.
+
+Because of that:
+
+* Traces should be short and wide
+* Nearby sensitive circuitry should be avoided
+* The surrounding area should remain relatively clear
+
+Ignoring these recommendations can introduce instability and noise throughout the board.
+
+### Sensitive Control Circuits
+
+Meanwhile, small capacitors and feedback components used for voltage regulation have their own requirements.
+
+These parts should remain close to the regulator IC.
+
+Long traces can introduce noise and reduce regulation performance.
+
+The more I learned, the more I realized that PCB layout is almost a form of physical engineering logic.
+
+The schematic defines relationships.
+
+The layout defines behavior.
+
+---
+
+# Designing for Heat
+
+Another challenge was thermal management.
+
+LED systems can draw significant current.
+
+Even when everything works electrically, excessive heat can become a long-term reliability problem.
+
+For this part of the design, I borrowed several techniques from the original LED Driver Board.
+
+Components carrying large currents were grouped together.
+
+Power nets were merged into large copper pours instead of relying entirely on thin traces.
+
+Large copper areas were used to distribute current more effectively and spread heat across the PCB.
+
+I also added numerous thermal vias connecting copper regions between layers.
+
+These vias help transfer heat into larger copper areas and improve overall cooling performance.
+
+It's not the kind of thing that immediately stands out when looking at the finished board.
+
+But it has a major impact on reliability.
+
+---
+
+# From Modules to a Platform
+
+By the time the PCB was complete, the project had changed significantly. At this point, it no longer feels like a simple stair light. It feels more like a compact local sensing and lighting control platform.
+
+Ironically, the goal at the beginning was simply to make a staircase light.
+
+But the hardware journey ended up teaching me almost as much as the software side of the project.
 
 ---
 
