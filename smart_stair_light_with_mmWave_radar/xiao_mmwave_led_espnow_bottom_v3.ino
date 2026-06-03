@@ -9,7 +9,7 @@
 
    目的保持不变:
    1. 本地下方雷达 + ESP-NOW 远端上方雷达判断通行方向
-   2. 先触发一侧预亮 30 颗灯，等待另一侧确认
+   2. 先触发一侧预亮 10 颗灯，等待另一侧确认
    3. 确认后按方向播放流水灯，完成后全亮保持
    4. 无人保持一段时间后熄灯
    5. 远端超时视为掉线，避免错误触发
@@ -111,7 +111,7 @@ const unsigned long REMOTE_TIMEOUT_MS = 2000;
 // 流水灯速度: 每隔 15ms 新增点亮一颗。
 const unsigned long LED_INTERVAL_MS = 15;
 
-// 等待另一端确认时，先在触发侧预亮 30 颗。
+// 等待另一端确认时，先在触发侧预亮 10 颗。
 const int PREVIEW_LED = 10;
 
 // LED 全局亮度，范围 0-255。
@@ -285,7 +285,7 @@ void radarRunFsm(unsigned long now) {
 enum LedCommandType {
   LED_CMD_NONE,    // 没有命令
   LED_CMD_CLEAR,   // 清灯
-  LED_CMD_PREVIEW, // 预亮触发侧 30 颗
+  LED_CMD_PREVIEW, // 预亮触发侧 10 颗
   LED_CMD_FLOW,    // 按方向开始流水灯
   LED_CMD_FULL_ON  // 全亮保持
 };
@@ -532,7 +532,7 @@ void enterIdle() {
 }
 
 // 本地下方先触发:
-// 方向暂定为上楼，LED 先从下方预亮 30 颗，等待远端确认。
+// 方向暂定为上楼，LED 先从下方预亮 10 颗，等待远端确认。
 void enterWaitRemote(unsigned long now) {
   passageContext.state = PASSAGE_WAIT_REMOTE;
   passageContext.direction = DIR_UP;
@@ -541,7 +541,7 @@ void enterWaitRemote(unsigned long now) {
 }
 
 // 远端上方先触发:
-// 方向暂定为下楼，LED 先从上方预亮 30 颗，等待本地确认。
+// 方向暂定为下楼，LED 先从上方预亮 10 颗，等待本地确认。
 void enterWaitLocal(unsigned long now) {
   passageContext.state = PASSAGE_WAIT_LOCAL;
   passageContext.direction = DIR_DOWN;
